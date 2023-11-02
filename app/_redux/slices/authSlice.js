@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "@/app/_api";
-import axios from "axios";
 
 const initialState = {
   refresh: null,
@@ -32,16 +31,9 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(login.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(login.fulfilled, (state) => {
-        state.status = 200;
-      })
-      .addCase(login.rejected, (state) => {
-        state.status = 401;
-      });
+    builder.addDefaultCase((state, action) => {
+      return state;
+    });
   },
 });
 
@@ -58,13 +50,14 @@ export const login = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await api.post("login", value);
-      console.log("resp login", response.data);
       dispatch(setAccessToken(response.data.access));
       dispatch(setRefreshToken(response.data.refresh));
+      dispatch(setStatus(200));
       document.cookie = `royal_accessToken=${response.data.access}`;
       localStorage.setItem("royal_refreshToken", response.data.refresh);
     } catch (error) {
-      console.error(error);
+      dispatch(setStatus(401));
+      // console.error(error);
     }
   }
 );
@@ -72,9 +65,7 @@ export const login = createAsyncThunk(
 export const refreshToken = createAsyncThunk(
   "auth/refresh",
   async (value, { dispatch }) => {
-    const response = await axios.post("login/refresh", {
-      ...value,
-    });
+    const response = await api.post("login/refresh", value);
     dispatch(setAccessToken(response.data.access));
     dispatch(setRefreshToken(response.data.refresh));
     document.cookie = `royal_accessToken=${response.data.access}`;

@@ -27,17 +27,20 @@ const onResponse = (response) => {
 
 const onResponseError = async (error) => {
   const res = error.response;
-  const unauthorizedError = res.status === 401;
-  const originalConfig = err.config;
+  const unauthorizedError = res.data.code === "token_not_valid";
+  const originalConfig = error.config;
 
   if (unauthorizedError && !originalConfig._retry) {
+    console.log("masuk unauthorized error");
     originalConfig._retry = true;
     const oldRefresh = localStorage.getItem(REFRESH_TOKEN);
     const { dispatch } = reduxStore;
 
-    try {
-      const res = await dispatch(refreshToken(oldRefresh));
+    console.log("oldRefresh: ", oldRefresh);
 
+    try {
+      const res = await dispatch(refreshToken({ refresh: oldRefresh }));
+      console.log("refresh", res.data);
       const { access, refresh } = res.data;
 
       dispatch(setRefreshToken(refresh));
@@ -45,10 +48,12 @@ const onResponseError = async (error) => {
 
       return axiosInstance(originalConfig);
     } catch (error) {
-      dispatch(logout());
+      // dispatch(logout());
+      console.error(error);
       return Promise.reject(error);
     }
   }
+  // console.error(error);
 
   return Promise.reject(error);
 };

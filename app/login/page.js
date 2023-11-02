@@ -17,34 +17,41 @@ import {
   FormHelperText,
   Button,
   FormErrorMessage,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import PasswordInput from "../_components/PasswordInput";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { Router, useRouter } from "next/navigation";
 import { login, setStatus } from "../_redux/slices/authSlice";
+import { useForm } from "react-hook-form";
 
 export default function Home() {
-  const isError = true;
   const dispatch = useDispatch();
-  const state = useSelector((state) => state.auth);
+  const authState = useSelector((state) => state.auth);
   const { push } = useRouter();
 
-  const handleSubmit = () => {
-    dispatch(
-      login({
-        username: "hardy",
-        password: "hardy123",
-      })
-    );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+    dispatch(setStatus("loading"));
+    dispatch(login(data));
   };
 
+  const isLoading = authState.status == "loading";
+
   useEffect(() => {
-    console.log("auth state: ", state);
-    if (state && state.status == 200) {
-      push("/");
+    console.log("auth state: ", authState);
+    if (authState) {
+      if (authState.status == 200) push("/");
     }
-  }, [state, push]);
+  }, [authState, push]);
 
   return (
     <main>
@@ -56,21 +63,40 @@ export default function Home() {
             </Heading>
           </CardHeader>
           <CardBody>
-            <FormControl isRequired isInvalid={isError}>
-              <FormLabel>Username</FormLabel>
-              <Input name="username" type="text" />
-              <FormErrorMessage>Username is required.</FormErrorMessage>
-            </FormControl>
-            <FormControl mt={5} isInvalid={isError}>
-              <FormLabel>Password</FormLabel>
-              <PasswordInput />
-              <FormErrorMessage>Password is required.</FormErrorMessage>
-            </FormControl>
-            <Box textAlign={"right"} mt={8}>
-              <Button colorScheme="teal" type="submit" onClick={handleSubmit}>
-                Submit
-              </Button>
-            </Box>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl isRequired isInvalid={errors.username}>
+                <FormLabel>Username</FormLabel>
+                <Input
+                  name="username"
+                  type="text"
+                  isReadOnly={isLoading}
+                  {...register("username", {
+                    required: "Username needs to be filled",
+                  })}
+                />
+                <FormErrorMessage>{errors.username?.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl mt={5} isRequired isInvalid={errors.password}>
+                <FormLabel>Password</FormLabel>
+                <PasswordInput
+                  register={register}
+                  error={errors.password}
+                  isReadOnly={isLoading}
+                />
+                <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+              </FormControl>
+              {authState?.status == 401 && (
+                <Alert status="error" mt={5}>
+                  <AlertIcon />
+                  No active account found
+                </Alert>
+              )}
+              <Box textAlign={"right"} mt={8}>
+                <Button isLoading={isLoading} colorScheme="teal" type="submit">
+                  Submit
+                </Button>
+              </Box>
+            </form>
           </CardBody>
         </Card>
       </Center>
