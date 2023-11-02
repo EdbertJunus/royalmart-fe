@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   CardBody,
@@ -9,15 +10,19 @@ import {
 
 const StockUpload = () => {
   return (
-    <Card mt={10} w={{ base: "100%", md: "50%" }}>
-      <CardHeader>
-        <Heading size="md">Stock</Heading>
-      </CardHeader>
-      <CardBody>
-        <Input type="file" />
-      </CardBody>
-      <Button borderTopRadius={0}>Upload</Button>
-    </Card>
+    <Box w={{ base: "100%", md: "50%" }}>
+      <Card>
+        <CardHeader>
+          <Heading size="md">Stock</Heading>
+        </CardHeader>
+        <CardBody>
+          <Input type="file" />
+          <Box textAlign={"right"} mt={8}>
+            <Button>Upload</Button>
+          </Box>
+        </CardBody>
+      </Card>
+    </Box>
   );
 };
 
