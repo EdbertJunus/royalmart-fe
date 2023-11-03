@@ -15,6 +15,7 @@ import {
   Heading,
   Input,
   Select,
+  Tag,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -56,7 +57,7 @@ const SalesUpload = ({ salesList }) => {
           <Flex flexWrap={"wrap"} mt={4} gap={3}>
             {salesList.data &&
               salesList.data.map((item, idx) => {
-                return <Badge key={idx}>{item}</Badge>;
+                return <Tag key={idx}>{item}</Tag>;
               })}
           </Flex>
         </CardHeader>

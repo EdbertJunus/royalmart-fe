@@ -1,4 +1,9 @@
-import { getMaster, setMasterStatus } from "@/app/_redux/slices/masterSlice";
+import {
+  getMaster,
+  setData,
+  setMasterStatus,
+} from "@/app/_redux/slices/masterSlice";
+import { outputExcel } from "@/app/_utils";
 import {
   Box,
   Button,
@@ -33,30 +38,13 @@ const MasterForm = ({ salesList }) => {
   const master = useSelector((state) => state.master);
 
   useEffect(() => {
-    console.log("masuk", master);
     if (master.status == 200) {
-      const data = master.data.split("},");
-      const newData = [];
-      // for (const [key, value] of Object.entries(data.slice(0, 10))) {
-      //   let newValue = "";
-      //   if (key == 0) {
-      //     newValue = value.substring(1);
-      //     newValue = newValue + "}";
-      //   } else if (key == data.length - 1) {
-      //     newValue = value.slice(0, -1);
-      //   } else {
-      //     newValue = value + "}";
-      //   }
-      //   try {
-      //     console.log("value", newValue);
-      //     let object = JSON.parse(newValue);
-      //     newData.push(object);
-      //   } catch (error) {
-      //     console.log("errors Parse", error);
-      //   }
-      // }
-      console.log(JSON.parse(master.data.replace(/\bNaN\b/g, "null")));
-      console.log("data abnru", newData);
+      // const jsonData = JSON.parse(master.data.replace(/\bNaN\b/g, "null"));
+      const jsonData = JSON.parse(master.data);
+      const columns = Object.keys(jsonData[0]);
+      outputExcel(jsonData, columns, "master.xlsx");
+
+      dispatch(setData({}));
       dispatch(setMasterStatus(400));
     }
   }, [master]);
