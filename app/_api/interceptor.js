@@ -40,11 +40,6 @@ const onResponseError = async (error) => {
 
     try {
       const res = await dispatch(refreshToken({ refresh: oldRefresh }));
-      console.log("refresh", res.data);
-      const { access, refresh } = res.data;
-
-      dispatch(setRefreshToken(refresh));
-      dispatch(setAccessToken(access));
 
       return axiosInstance(originalConfig);
     } catch (error) {

@@ -3,7 +3,7 @@ import api from "@/app/_api";
 
 const initialState = {
   data: [],
-  status: 404,
+  status: 400,
   message: null,
 };
 
@@ -33,7 +33,7 @@ export const getSalesList = createAsyncThunk(
       dispatch(setSalesStatus(200));
       dispatch(setData(response.data));
     } catch (error) {
-      dispatch(setSalesStatus(401));
+      dispatch(setSalesStatus(404));
       // console.error(error);
     }
   }
