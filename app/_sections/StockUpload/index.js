@@ -24,10 +24,17 @@ const StockUpload = () => {
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    let formData = new FormData();
-    formData.append("stockFile", data.stockFile[0]);
-    dispatch(postStock(formData));
-    reset();
+    if (data.stockFile[0].type != "application/vnd.ms-excel") {
+      setError("stockFile", {
+        type: "filetype",
+        message: "File needs to be excel (.xls)",
+      });
+    } else {
+      let formData = new FormData();
+      formData.append("stockFile", data.stockFile[0]);
+      dispatch(postStock(formData));
+      reset();
+    }
   };
 
   return (

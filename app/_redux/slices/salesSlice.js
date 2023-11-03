@@ -39,4 +39,17 @@ export const getSalesList = createAsyncThunk(
   }
 );
 
+export const postSales = createAsyncThunk(
+  "sales/post",
+  async (value, { dispatch }) => {
+    try {
+      const response = await api.post("sales", value);
+      dispatch(setSalesStatus(200));
+      dispatch(getSalesList());
+    } catch (error) {
+      dispatch(setSalesStatus(404));
+    }
+  }
+);
+
 export default salesSlice.reducer;
