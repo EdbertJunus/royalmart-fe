@@ -31,7 +31,6 @@ const SalesUpload = ({ salesList }) => {
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    console.log(data);
     if (data.fileSales[0].type != "application/vnd.ms-excel") {
       setError("fileSales", {
         type: "filetype",
@@ -48,7 +47,6 @@ const SalesUpload = ({ salesList }) => {
     }
   };
 
-  console.log("errors", errors);
   return (
     <Box w={{ base: "100%", md: "50%" }}>
       <Card>

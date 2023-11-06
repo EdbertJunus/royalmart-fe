@@ -13,7 +13,7 @@ const onRequest = (config) => {
   const accessToken = getCookie(ACCESS_TOKEN);
   config.headers.Authorization = `Bearer ${accessToken}`;
 
-  console.info(`[request] [${JSON.stringify(config)}]`);
+  // console.info(`[request] [${JSON.stringify(config)}]`);
   return config;
 };
 
@@ -31,12 +31,12 @@ const onResponseError = async (error) => {
   const originalConfig = error.config;
 
   if (unauthorizedError && !originalConfig._retry) {
-    console.log("masuk unauthorized error");
+    // console.log("masuk unauthorized error");
     originalConfig._retry = true;
     const oldRefresh = localStorage.getItem(REFRESH_TOKEN);
     const { dispatch } = reduxStore;
 
-    console.log("oldRefresh: ", oldRefresh);
+    // console.log("oldRefresh: ", oldRefresh);
 
     try {
       const res = await dispatch(refreshToken({ refresh: oldRefresh }));
@@ -44,7 +44,7 @@ const onResponseError = async (error) => {
       return axiosInstance(originalConfig);
     } catch (error) {
       // dispatch(logout());
-      console.error(error);
+      // console.error(error);
       return Promise.reject(error);
     }
   }

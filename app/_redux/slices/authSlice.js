@@ -50,11 +50,14 @@ export const login = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await api.post("login", value);
-      dispatch(setAccessToken(response.data.access));
-      dispatch(setRefreshToken(response.data.refresh));
-      dispatch(setStatus(200));
-      document.cookie = `royal_accessToken=${response.data.access}`;
-      localStorage.setItem("royal_refreshToken", response.data.refresh);
+      if (response.status == 200) {
+        dispatch(setAccessToken(response.data.access));
+        dispatch(setRefreshToken(response.data.refresh));
+
+        document.cookie = `royal_accessToken=${response.data.access}`;
+        localStorage.setItem("royal_refreshToken", response.data.refresh);
+      }
+      dispatch(setStatus(response.status));
     } catch (error) {
       dispatch(setStatus(401));
       // console.error(error);

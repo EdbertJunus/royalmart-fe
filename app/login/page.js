@@ -39,7 +39,6 @@ export default function Home() {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(setStatus("loading"));
     dispatch(login(data));
   };
@@ -47,7 +46,6 @@ export default function Home() {
   const isLoading = authState.status == "loading";
 
   useEffect(() => {
-    console.log("auth state: ", authState);
     if (authState) {
       if (authState.status == 200) push("/");
     }

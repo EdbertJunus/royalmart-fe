@@ -14,9 +14,9 @@ const AuthWrapper = ({ children }) => {
   useEffect(() => {
     const refresh = localStorage.getItem(REFRESH_TOKEN);
     const access = getCookie(ACCESS_TOKEN);
-    console.log("access and refresh", access, refresh);
+    // console.log("access and refresh", access, refresh);
     if (!access && !refresh) {
-      console.log(" ke login ");
+      // console.log(" ke login ");
       push("/login");
       dispatch(logout());
     } else {

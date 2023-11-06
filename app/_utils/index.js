@@ -27,7 +27,6 @@ export const outputExcel = (data, columns, outputFile) => {
     });
   });
 
-  console.log(wsColumn);
   worksheet.columns = wsColumn;
   // worksheet.addRow(columns);
   worksheet.addRows(data);
