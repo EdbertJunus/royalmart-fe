@@ -15,9 +15,6 @@ const rootReducer = combineReducers({
   master: masterReducer,
 });
 
-export default configureStore(
-  {
-    reducer: rootReducer,
-  },
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+export default configureStore({
+  reducer: rootReducer,
+});
