@@ -1,4 +1,4 @@
-import { postStock } from "@/app/_redux/slices/stockSlice";
+import { checkStock, postStock } from "@/app/_redux/slices/stockSlice";
 import {
   Box,
   Button,
@@ -10,9 +10,11 @@ import {
   FormLabel,
   Heading,
   Input,
+  Text,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const StockUpload = () => {
   const {
@@ -22,6 +24,7 @@ const StockUpload = () => {
     reset,
   } = useForm();
   const dispatch = useDispatch();
+  const stockData = useSelector((state) => state.stock.data);
 
   const onSubmit = (data) => {
     if (data.stockFile[0].type != "application/vnd.ms-excel") {
@@ -37,11 +40,19 @@ const StockUpload = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(checkStock());
+  }, []);
+
   return (
     <Box w={{ base: "100%", md: "50%" }}>
       <Card>
-        <CardHeader>
+        <CardHeader pb={0}>
           <Heading size="md">Stock</Heading>
+
+          <Text mt={1} color={stockData === "exist" ? "orange" : "red"}>
+            {stockData === "exist" ? "Stock Uploaded" : "Stock Empty"}
+          </Text>
         </CardHeader>
         <CardBody>
           <form onSubmit={handleSubmit(onSubmit)}>

@@ -42,8 +42,6 @@ const onResponseError = async (error) => {
     originalConfig._retry = true;
     const oldRefresh = localStorage.getItem(REFRESH_TOKEN);
 
-    // console.log("oldRefresh: ", oldRefresh);
-
     try {
       const res = await dispatch(refreshToken({ refresh: oldRefresh }));
 
