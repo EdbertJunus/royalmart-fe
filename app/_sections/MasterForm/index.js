@@ -36,6 +36,7 @@ const MasterForm = ({ salesList }) => {
   const dispatch = useDispatch();
 
   const master = useSelector((state) => state.master);
+  const stockData = useSelector((state) => state.stock.data);
 
   useEffect(() => {
     if (master.status == 200) {
@@ -73,30 +74,36 @@ const MasterForm = ({ salesList }) => {
           <Heading size="md">Master Form</Heading>
         </CardHeader>
         <CardBody>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.monthSales}>
-              <FormLabel mb={2}>Choose Sales : </FormLabel>
+          {salesList?.data?.length > 0 && stockData === "exist" ? (
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl isInvalid={errors.monthSales}>
+                <FormLabel mb={2}>Choose Sales : </FormLabel>
 
-              <Flex flexWrap={"wrap"} gap={3}>
-                {salesList.data &&
-                  salesList?.data.map((item, idx) => {
-                    return (
-                      <Checkbox
-                        key={idx}
-                        {...register("monthSales")}
-                        value={item}
-                      >
-                        {item}
-                      </Checkbox>
-                    );
-                  })}
-              </Flex>
-              <FormErrorMessage>{errors.monthSales?.message}</FormErrorMessage>
-            </FormControl>
-            <Box mt={4} textAlign={"right"}>
-              <Button type="submit">Create Master</Button>
-            </Box>
-          </form>
+                <Flex flexWrap={"wrap"} gap={3}>
+                  {salesList.data &&
+                    salesList?.data.map((item, idx) => {
+                      return (
+                        <Checkbox
+                          key={idx}
+                          {...register("monthSales")}
+                          value={item}
+                        >
+                          {item}
+                        </Checkbox>
+                      );
+                    })}
+                </Flex>
+                <FormErrorMessage>
+                  {errors.monthSales?.message}
+                </FormErrorMessage>
+              </FormControl>
+              <Box mt={4} textAlign={"right"}>
+                <Button type="submit">Create Master</Button>
+              </Box>
+            </form>
+          ) : (
+            <Text>Please Fill the stock and sales Data</Text>
+          )}
         </CardBody>
       </Card>
     </Box>
