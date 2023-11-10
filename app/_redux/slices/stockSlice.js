@@ -3,6 +3,7 @@ import api from "@/app/_api";
 
 const initialState = {
   status: 400,
+  data: "empty",
 };
 
 const stockSlice = createSlice({
@@ -25,11 +26,25 @@ export const postStock = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await api.post("stock", value);
-      dispatch(setStockStatus(200));
+      dispatch(setStockStatus(response.status));
       // dispatch(setData(response.data));
     } catch (error) {
       dispatch(setStockStatus(404));
       // console.error(error);
+    }
+  }
+);
+
+export const checkStock = createAsyncThunk(
+  "stock/get",
+  async (value, { dispatch }) => {
+    try {
+      const response = await api.get("stock");
+      if (response.data.data.length > 0) {
+        dispatch(setData("exist"));
+      }
+    } catch (error) {
+      dispatch(setStockStatus(400));
     }
   }
 );

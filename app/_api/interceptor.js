@@ -3,6 +3,7 @@ import { getCookie } from "@/app/_utils";
 
 import reduxStore from "@/app/_redux/store";
 import {
+  logout,
   refreshToken,
   setAccessToken,
   setRefreshToken,
@@ -31,12 +32,15 @@ const onResponseError = async (error) => {
   const originalConfig = error.config;
 
   if (unauthorizedError && !originalConfig._retry) {
-    // console.log("masuk unauthorized error");
-    originalConfig._retry = true;
-    const oldRefresh = localStorage.getItem(REFRESH_TOKEN);
     const { dispatch } = reduxStore;
 
-    // console.log("oldRefresh: ", oldRefresh);
+    if (originalConfig.url == "login/refresh") {
+      dispatch(logout());
+      return Promise.reject(error);
+    }
+
+    originalConfig._retry = true;
+    const oldRefresh = localStorage.getItem(REFRESH_TOKEN);
 
     try {
       const res = await dispatch(refreshToken({ refresh: oldRefresh }));
