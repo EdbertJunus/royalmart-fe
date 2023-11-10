@@ -12,7 +12,7 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -25,8 +25,10 @@ const StockUpload = () => {
   } = useForm();
   const dispatch = useDispatch();
   const stockData = useSelector((state) => state.stock.data);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (data) => {
+    setLoading(true);
     if (data.stockFile[0].type != "application/vnd.ms-excel") {
       setError("stockFile", {
         type: "filetype",
@@ -38,6 +40,7 @@ const StockUpload = () => {
       dispatch(postStock(formData));
       reset();
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -68,7 +71,9 @@ const StockUpload = () => {
               <FormErrorMessage>{errors?.stockFile?.message}</FormErrorMessage>
             </FormControl>
             <Box textAlign={"right"} mt={8}>
-              <Button type="submit">Upload</Button>
+              <Button type="submit" isLoading={loading}>
+                Upload
+              </Button>
             </Box>
           </form>
         </CardBody>

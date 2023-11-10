@@ -26,7 +26,7 @@ export const postStock = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await api.post("stock", value);
-      dispatch(setStockStatus(200));
+      dispatch(setStockStatus(response.status));
       // dispatch(setData(response.data));
     } catch (error) {
       dispatch(setStockStatus(404));
