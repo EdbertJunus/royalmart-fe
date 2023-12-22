@@ -19,7 +19,9 @@ import {
   Heading,
   Input,
   Text,
+  useToast,
 } from "@chakra-ui/react";
+import { useRef } from "react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,13 +40,23 @@ const MasterForm = ({ salesList }) => {
   const master = useSelector((state) => state.master);
   const stockData = useSelector((state) => state.stock.data);
 
+  const toast = useToast();
+  const toastMasterRef = useRef();
+
   useEffect(() => {
     if (master.status == 200) {
       // const jsonData = JSON.parse(master.data.replace(/\bNaN\b/g, "null"));
       const jsonData = JSON.parse(master.data);
       const columns = Object.keys(jsonData[0]);
       outputExcel(jsonData, columns, "master.xlsx");
-
+      toast.update(toastMasterRef.current, {
+        title: "Success",
+        description: "Data Master berhasil diproses",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
       dispatch(setData({}));
       dispatch(setMasterStatus(400));
     }
@@ -62,8 +74,16 @@ const MasterForm = ({ salesList }) => {
       formData.append("periode", periode);
 
       dispatch(getMaster(formData));
-
       reset();
+
+      toastMasterRef.current = toast({
+        title: "Loading",
+        description: "Data Master sedang diproses",
+        status: "loading",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 
