@@ -57,6 +57,7 @@ const SalesUpload = ({ salesList }) => {
         status: "loading",
         duration: 5000,
         isClosable: true,
+        position: "top",
       });
     }
   };
@@ -71,6 +72,7 @@ const SalesUpload = ({ salesList }) => {
         status: "success",
         duration: 8000,
         isClosable: true,
+        position: "top",
       };
     } else if (salesStatus == 404) {
       dataSalesToast = {
@@ -79,6 +81,7 @@ const SalesUpload = ({ salesList }) => {
         status: "error",
         duration: 8000,
         isClosable: true,
+        position: "top",
       };
     }
 

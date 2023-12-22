@@ -59,6 +59,7 @@ const StockUpload = () => {
         status: "loading",
         duration: 5000,
         isClosable: true,
+        position: "top",
       });
     }
     setLoading(false);
@@ -77,6 +78,7 @@ const StockUpload = () => {
         status: "success",
         duration: 8000,
         isClosable: true,
+        position: "top",
       };
     } else if (stockStatus == 404) {
       dataToast = {
@@ -85,6 +87,7 @@ const StockUpload = () => {
         status: "error",
         duration: 8000,
         isClosable: true,
+        position: "top",
       };
     }
 
