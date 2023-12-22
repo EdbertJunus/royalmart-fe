@@ -69,7 +69,6 @@ const StockUpload = () => {
   }, []);
 
   useEffect(() => {
-    console.log("stock status kepanggil: ", stockStatus);
     let dataToast = {};
     if (stockStatus == 200) {
       dataToast = {

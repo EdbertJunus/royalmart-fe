@@ -1,6 +1,6 @@
 "use client";
 
-import { postSales } from "@/app/_redux/slices/salesSlice";
+import { postSales, setSalesStatus } from "@/app/_redux/slices/salesSlice";
 import {
   Badge,
   Box,
@@ -16,9 +16,12 @@ import {
   Input,
   Select,
   Tag,
+  useToast,
 } from "@chakra-ui/react";
+import { useRef } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 const SalesUpload = ({ salesList }) => {
   const {
@@ -29,6 +32,9 @@ const SalesUpload = ({ salesList }) => {
     reset,
   } = useForm();
   const dispatch = useDispatch();
+  const salesStatus = useSelector((state) => state.sales.status, shallowEqual);
+  const toast = useToast();
+  const toastSalesReff = useRef();
 
   const onSubmit = (data) => {
     if (data.fileSales[0].type != "application/vnd.ms-excel") {
@@ -41,11 +47,46 @@ const SalesUpload = ({ salesList }) => {
       let formData = new FormData();
       formData.append("periode", periode);
       formData.append("fileSales", data.fileSales[0]);
-      const res = dispatch(postSales(formData));
 
+      dispatch(postSales(formData));
       reset();
+
+      toastSalesReff.current = toast({
+        title: "Loading",
+        description: "Data Sales sedang diproses",
+        status: "loading",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
+
+  useEffect(() => {
+    let dataSalesToast = {};
+
+    if (salesStatus == 200) {
+      dataSalesToast = {
+        title: "Success",
+        description: "Data Sales berhasil diupload",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+      };
+    } else if (salesStatus == 404) {
+      dataSalesToast = {
+        title: "Fail",
+        description: "Data Sales gagal diupload, coba upload kembali",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+      };
+    }
+
+    if (salesStatus == 200 || salesStatus == 404) {
+      dispatch(setSalesStatus(400));
+      toast.update(toastSalesReff.current, dataSalesToast);
+    }
+  }, [salesStatus]);
 
   return (
     <Box w={{ base: "100%", md: "50%" }}>

@@ -30,7 +30,6 @@ export const getSalesList = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await api.get("sales");
-      dispatch(setSalesStatus(200));
       dispatch(setData(response.data));
     } catch (error) {
       dispatch(setSalesStatus(404));
@@ -44,7 +43,8 @@ export const postSales = createAsyncThunk(
   async (value, { dispatch }) => {
     try {
       const response = await api.post("sales", value);
-      dispatch(setSalesStatus(200));
+
+      dispatch(setSalesStatus(response.status));
       dispatch(getSalesList());
     } catch (error) {
       dispatch(setSalesStatus(404));
