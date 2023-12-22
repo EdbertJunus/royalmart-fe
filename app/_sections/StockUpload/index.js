@@ -1,4 +1,8 @@
-import { checkStock, postStock } from "@/app/_redux/slices/stockSlice";
+import {
+  checkStock,
+  postStock,
+  setStockStatus,
+} from "@/app/_redux/slices/stockSlice";
 import {
   Box,
   Button,
@@ -12,9 +16,10 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useToast } from "@chakra-ui/react";
 
 const StockUpload = () => {
   const {
@@ -22,9 +27,17 @@ const StockUpload = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm();
   const dispatch = useDispatch();
-  const stockData = useSelector((state) => state.stock.data);
+  const [stockData, stockStatus] = useSelector(
+    (state) => [state.stock.data, state.stock.status],
+    shallowEqual
+  );
+
+  const toast = useToast();
+  const toastStockReff = useRef();
+
   const [loading, setLoading] = useState(false);
 
   const onSubmit = (data) => {
@@ -39,6 +52,14 @@ const StockUpload = () => {
       formData.append("stockFile", data.stockFile[0]);
       dispatch(postStock(formData));
       reset();
+
+      toastStockReff.current = toast({
+        title: "Loading",
+        description: "Data sedang diproses",
+        status: "loading",
+        duration: 5000,
+        isClosable: true,
+      });
     }
     setLoading(false);
   };
@@ -46,6 +67,33 @@ const StockUpload = () => {
   useEffect(() => {
     dispatch(checkStock());
   }, []);
+
+  useEffect(() => {
+    console.log("stock status kepanggil: ", stockStatus);
+    let dataToast = {};
+    if (stockStatus == 200) {
+      dataToast = {
+        title: "Success",
+        description: "Data berhasil diupload",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+      };
+    } else if (stockStatus == 404) {
+      dataToast = {
+        title: "Fail",
+        description: "Data gagal diupload, coba upload kembali",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+      };
+    }
+
+    if (stockStatus == 200 || stockStatus == 404) {
+      dispatch(setStockStatus(400));
+      toast.update(toastStockReff.current, dataToast);
+    }
+  }, [stockStatus]);
 
   return (
     <Box w={{ base: "100%", md: "50%" }}>
