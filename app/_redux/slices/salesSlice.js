@@ -52,4 +52,18 @@ export const postSales = createAsyncThunk(
   }
 );
 
+export const deleteSales = createAsyncThunk(
+  "sales/delete",
+  async (value, { dispatch }) => {
+    try {
+      const response = await api.delete("sales", { data: value });
+
+      dispatch(setSalesStatus(response.status));
+      dispatch(getSalesList());
+    } catch (error) {
+      dispatch(setSalesStatus(404));
+    }
+  }
+);
+
 export default salesSlice.reducer;
