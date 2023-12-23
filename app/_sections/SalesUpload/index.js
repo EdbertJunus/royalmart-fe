@@ -1,5 +1,6 @@
 "use client";
 
+import DeleteModal from "@/app/_components/DeleteModal";
 import { postSales, setSalesStatus } from "@/app/_redux/slices/salesSlice";
 import {
   Badge,
@@ -16,6 +17,7 @@ import {
   Input,
   Select,
   Tag,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useRef } from "react";
@@ -33,6 +35,9 @@ const SalesUpload = ({ salesList }) => {
   } = useForm();
   const dispatch = useDispatch();
   const salesStatus = useSelector((state) => state.sales.status, shallowEqual);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const toast = useToast();
   const toastSalesReff = useRef();
 
@@ -96,11 +101,20 @@ const SalesUpload = ({ salesList }) => {
       <Card>
         <CardHeader>
           <Heading size="md">Sales</Heading>
-          <Flex flexWrap={"wrap"} mt={4} gap={3}>
-            {salesList.data &&
-              salesList.data.map((item, idx) => {
-                return <Tag key={idx}>{item}</Tag>;
-              })}
+          <Flex justifyContent={"space-between"}>
+            <Flex flexWrap={"wrap"} mt={4} gap={3}>
+              {salesList.data &&
+                salesList.data.map((item, idx) => {
+                  return <Tag key={idx}>{item}</Tag>;
+                })}
+            </Flex>
+            {salesList.data?.length > 0 && (
+              <Box ml={2}>
+                <Button colorScheme="red" variant="outline" onClick={onOpen}>
+                  Delete Sales
+                </Button>
+              </Box>
+            )}
           </Flex>
         </CardHeader>
         <CardBody>
@@ -159,6 +173,7 @@ const SalesUpload = ({ salesList }) => {
           </form>
         </CardBody>
       </Card>
+      <DeleteModal isOpen={isOpen} onClose={onClose} salesList={salesList} />
     </Box>
   );
 };
