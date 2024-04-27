@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "@chakra-ui/react";
 
 const StockUpload = () => {
@@ -30,10 +30,10 @@ const StockUpload = () => {
     setError,
   } = useForm();
   const dispatch = useDispatch();
-  const [stockData, stockStatus] = useSelector(
-    (state) => [state.stock.data, state.stock.status],
-    shallowEqual
-  );
+  const [stockData, stockStatus] = useSelector((state) => [
+    state.stock.data,
+    state.stock.status,
+  ]);
 
   const toast = useToast();
   const toastStockReff = useRef();
@@ -71,7 +71,7 @@ const StockUpload = () => {
 
   useEffect(() => {
     let dataToast = {};
-    if (stockStatus == 200) {
+    if (stockStatus == 201) {
       dataToast = {
         title: "Success",
         description: "Data berhasil diupload",
@@ -91,11 +91,11 @@ const StockUpload = () => {
       };
     }
 
-    if (stockStatus == 200 || stockStatus == 404) {
+    if (stockStatus == 201 || stockStatus == 404) {
       dispatch(setStockStatus(400));
       toast.update(toastStockReff.current, dataToast);
     }
-  }, [stockStatus]);
+  }, [stockStatus, loading]);
 
   return (
     <Box w={{ base: "100%", md: "50%" }}>
