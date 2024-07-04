@@ -1,8 +1,4 @@
-import {
-  applyMiddleware,
-  combineReducers,
-  configureStore,
-} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import salesReducer from "./slices/salesSlice";
 import authReducer from "./slices/authSlice";
 import stockReducer from "./slices/stockSlice";
